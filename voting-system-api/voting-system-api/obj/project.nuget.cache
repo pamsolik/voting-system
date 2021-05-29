@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Ljmav6XnvxVYeTAVkT+vJzpHyTdufYy0SMNZOGyXkyM5YBApIfQepWyVHOqW2qyL6N+E/pWydFogZrCexNMzuw==",
+  "dgSpecHash": "SAfYm1cXI50br0iEUibUD/DbmGxb2/Lwubq+1vbc3hY8b+giykra6RkqzrqOJ6vydMes7VJFAuqZfNcorzYh1w==",
   "success": true,
-  "projectFilePath": "D:\\poli\\Pracownia_Problemowa\\voting-system\\voting-system-api\\voting-system-api\\voting-system-api.csproj",
+  "projectFilePath": "D:\\poli\\Pracownia_Problemowa\\repo\\voting_system_api\\voting-system-api\\voting-system-api\\voting-system-api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\amsit\\.nuget\\packages\\common.logging.core\\3.4.1\\common.logging.core.3.4.1.nupkg.sha512",
     "C:\\Users\\amsit\\.nuget\\packages\\microsoft.csharp\\4.3.0\\microsoft.csharp.4.3.0.nupkg.sha512",

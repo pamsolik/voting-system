@@ -10,7 +10,7 @@ namespace VotingSystemApi.Services
     {
         //public const string TestAccountAdress = "0x3bCCC4134165893283C8df486C7Ee662EBd6257F";
 
-        private static readonly string _contractAdress = "0x4ce5878657F552440dCD8544936C9B37f8c2FaaA";
+        private static readonly string _contractAdress = "0x29c2ca0680eA53AAE4B436440b9835C392FB4Fdc";
 
         public static BigInteger GetTimeStamp(DateTime dateTime)
         {
