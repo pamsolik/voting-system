@@ -23,6 +23,7 @@ namespace VotingSystemApi
             //services.AddScoped<IAdminService, AdminService>();
             //services.AddScoped<VotingSystemService>();
             services.AddControllers();
+            services.AddCors();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "VotingSystemApi", Version = "v1" });
@@ -40,6 +41,12 @@ namespace VotingSystemApi
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials()); // allow credentials
 
             app.UseRouting();
 

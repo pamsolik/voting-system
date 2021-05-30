@@ -27,7 +27,7 @@ namespace VotingSystemApi.Controllers
             //return Ok(token);
         }
 
-        [HttpGet("get_elections")]
+        [HttpPost("get_elections")]
         public async Task<IActionResult> GetElections([FromBody] AuthDto authDto)
         {
             try
@@ -43,14 +43,16 @@ namespace VotingSystemApi.Controllers
             }
         }
 
-        [HttpGet("get_election_details")]
+        [HttpPost("get_election_details")]
         public async Task<IActionResult> GetElection(string id, [FromBody] AuthDto authDto)
         {
+            int i = 0;
             try
             {
                 var svc = NethereumProvider.GetVotingSystemService(authDto.AccountAddress, authDto.Password);
                 BigInteger a = BigInteger.Parse(id);
                 var election = await svc.GetDetailsQueryAsync(a);
+                int e = 0;
                 return Ok(new ElectionDetailsView(election));
             }
             catch (Exception ex)
@@ -64,10 +66,10 @@ namespace VotingSystemApi.Controllers
         {
             try
             {
-                if (createElectionDto.DateFrom < DateTime.Now) 
-                    return BadRequest(new MessageView("DateFrom has to be a future date."));
-                if (createElectionDto.DateFrom >= createElectionDto.DateTo) 
-                    return BadRequest(new MessageView("DateFrom has earlier than DateTo."));
+                //if (createElectionDto.DateFrom < DateTime.Now) 
+                    //return BadRequest(new MessageView("DateFrom has to be a future date."));
+                //if (createElectionDto.DateFrom >= createElectionDto.DateTo) 
+                    //return BadRequest(new MessageView("DateFrom has earlier than DateTo."));
                 if (createElectionDto.Candidates.Count < 2) 
                     return BadRequest(new MessageView("There has to be more than one candidate."));
                 if (createElectionDto.KeysPerVoter < 0) 
