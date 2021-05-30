@@ -69,7 +69,7 @@ contract VotingSystem {
 
     function getDetails(uint id) public view 
     adminOnly()
-    onlyAfterElection(id)
+    //onlyAfterElection(id)
     returns(electionDetails memory Value) 
     {
         for(uint i=0; i < elections.length; i++){
@@ -169,7 +169,7 @@ contract VotingSystem {
 
 
     function startVote(string memory voter, address keyAdr) public view
-    onlyDuringElection(keyAdr)
+    //onlyDuringElection(keyAdr)
     returns(election memory el) {
         require(keys[keyAdr].ValidKey, "Key not valid.");
         require(equal(voters[msg.sender], voter), "Sender and voter don't match.");

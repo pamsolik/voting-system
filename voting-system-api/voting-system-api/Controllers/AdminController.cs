@@ -46,13 +46,11 @@ namespace VotingSystemApi.Controllers
         [HttpPost("get_election_details")]
         public async Task<IActionResult> GetElection(string id, [FromBody] AuthDto authDto)
         {
-            int i = 0;
             try
             {
                 var svc = NethereumProvider.GetVotingSystemService(authDto.AccountAddress, authDto.Password);
                 BigInteger a = BigInteger.Parse(id);
                 var election = await svc.GetDetailsQueryAsync(a);
-                int e = 0;
                 return Ok(new ElectionDetailsView(election));
             }
             catch (Exception ex)

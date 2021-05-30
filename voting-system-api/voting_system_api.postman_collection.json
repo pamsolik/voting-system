@@ -1,0 +1,143 @@
+{
+	"info": {
+		"_postman_id": "5f13de7b-b6bb-436d-8e90-c45222627592",
+		"name": "voting_system_api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "add_admin_batch",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"auth\": {\r\n    \"accountAddress\": \"0x34792d447058c7aa002935Dfc37f0bb253d3C349\",\r\n    \"password\": \"password\"\r\n  },\r\n  \"admins\": [\r\n    \"0x34792d447058c7aa002935Dfc37f0bb253d3C349\",\r\n    \"0xAc63c47fe7e4CAc854719dfd9e2068CF166846B4\",\r\n    \"0xBdC5F9d5804E01AA1abd6d8563FfCcf7433CD4C5\"\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44324/add_admin_batch",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44324",
+					"path": [
+						"add_admin_batch"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create_election",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"accountAddress\": \"0x11A39aF8F08c53Bd8E51E581Ec621650A7380C07\",\r\n  \"authenticationToken\": \"ass\",\r\n  \"title\": \"election\",\r\n  \"dateFrom\": \"2021-05-06T19:43:07.856Z\",\r\n  \"dateTo\": \"2021-05-06T19:43:07.856Z\",\r\n  \"candidates\": [\r\n    \"a\",\r\n    \"b\",\r\n    \"c\",\r\n    \"d\"\r\n  ],\r\n  \"keysPerVoter\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "get_elections",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authToken",
+						"value": "4w9@9:,3;]{34ufa[>ikno8[k>1d_f3g3r#2{#m>#4r/!8#0z*i>=*&q/)1$7]_",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:44324/get_elections",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44324",
+					"path": [
+						"get_elections"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "generate_codes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "get_details",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "add_vote",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "auth",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "add_admin",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "start_vote",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "check_vote",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		}
+	]
+}
