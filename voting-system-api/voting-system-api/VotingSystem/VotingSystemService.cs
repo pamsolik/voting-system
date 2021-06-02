@@ -239,6 +239,43 @@ namespace VotingSystemApi.Contracts.VotingSystem
             return ContractHandler.QueryDeserializingToObjectAsync<GetElectionsFunction, GetElectionsOutputDTO>(null, blockParameter);
         }
 
+        public Task<bool> IsAdminQueryAsync(IsAdminFunction isAdminFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<IsAdminFunction, bool>(isAdminFunction, blockParameter);
+        }
+
+        
+        public Task<bool> IsAdminQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<IsAdminFunction, bool>(null, blockParameter);
+        }
+
+        public Task<string> RemoveAdminRequestAsync(RemoveAdminFunction removeAdminFunction)
+        {
+             return ContractHandler.SendRequestAsync(removeAdminFunction);
+        }
+
+        public Task<TransactionReceipt> RemoveAdminRequestAndWaitForReceiptAsync(RemoveAdminFunction removeAdminFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(removeAdminFunction, cancellationToken);
+        }
+
+        public Task<string> RemoveAdminRequestAsync(string admin)
+        {
+            var removeAdminFunction = new RemoveAdminFunction();
+                removeAdminFunction.Admin = admin;
+            
+             return ContractHandler.SendRequestAsync(removeAdminFunction);
+        }
+
+        public Task<TransactionReceipt> RemoveAdminRequestAndWaitForReceiptAsync(string admin, CancellationTokenSource cancellationToken = null)
+        {
+            var removeAdminFunction = new RemoveAdminFunction();
+                removeAdminFunction.Admin = admin;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(removeAdminFunction, cancellationToken);
+        }
+
         public Task<StartVoteOutputDTO> StartVoteQueryAsync(StartVoteFunction startVoteFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<StartVoteFunction, StartVoteOutputDTO>(startVoteFunction, blockParameter);

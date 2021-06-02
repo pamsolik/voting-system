@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Nethereum.Contracts;
 using System;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using VotingSystemApi.Contracts.VotingSystem.ContractDefinition;
+using VotingSystemApi.Models;
 using VotingSystemApi.Models.DTOs;
 using VotingSystemApi.Models.Views;
 using VotingSystemApi.Services;
@@ -14,28 +16,48 @@ namespace VotingSystemApi.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        //private readonly IAuthService _authService;
-        //public AdminController(IAuthService authService) {
-        //    _authService = authService;
-        //}
-
-        [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] AuthDto authDto)
+        private readonly IAuthService _authService;
+        public AdminController(IAuthService authService)
         {
-            return Ok("Not implemented yet");
-            //var token = _authService.Authenticate(authDto);
-            //return Ok(token);
+            _authService = authService;
         }
 
-        [HttpPost("get_elections")]
-        public async Task<IActionResult> GetElections([FromBody] AuthDto authDto)
+        [HttpPost("authenticate")]
+        public async Task<IActionResult> Authenticate([FromBody] AuthDto authDto)
         {
             try
             {
-                var svc = NethereumProvider.GetVotingSystemService(authDto.AccountAddress, authDto.Password);
+                var session = new NethereumSession(authDto);
+                var svc = session.UtilizeSession();
+                var isAdmin = await svc.IsAdminQueryAsync();
+
+                if (isAdmin)
+                {
+                    HttpContext.Session.Set(session.Token, _authService.ConvertSession(session));
+                    return Ok(new TokenView("Logged in.", session.Token));
+                }
+                return Unauthorized(new MessageView("Incorect login/password/no administrator privileges."));
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(new MessageView(ex.Message));
+            }
+        }
+
+        [HttpGet("get_elections")]
+        public async Task<IActionResult> GetElections([FromHeader] string authToken)
+        {
+            try
+            {
+                if (!_authService.ValidateCurrentToken(authToken)) return BadRequest(new MessageView("Token not Valid"));
+                var svc = _authService.GetSession(HttpContext.Session.Get(authToken));
 
                 var elections = await svc.GetElectionsQueryAsync();
                 return Ok(new ElectionsView(elections));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new MessageView(ex.Message));
             }
             catch (Exception ex)
             {
@@ -43,17 +65,21 @@ namespace VotingSystemApi.Controllers
             }
         }
 
-        [HttpPost("get_election_details")]
-        public async Task<IActionResult> GetElection(string id, [FromBody] AuthDto authDto)
+        [HttpGet("get_election_details")]
+        public async Task<IActionResult> GetElection(string id, [FromHeader] string authToken)
         {
-            int i = 0;
             try
             {
-                var svc = NethereumProvider.GetVotingSystemService(authDto.AccountAddress, authDto.Password);
+                if (!_authService.ValidateCurrentToken(authToken)) return BadRequest(new MessageView("Token not Valid"));
+                var svc = _authService.GetSession(HttpContext.Session.Get(authToken));
+
                 BigInteger a = BigInteger.Parse(id);
                 var election = await svc.GetDetailsQueryAsync(a);
-                int e = 0;
                 return Ok(new ElectionDetailsView(election));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new MessageView(ex.Message));
             }
             catch (Exception ex)
             {
@@ -62,14 +88,15 @@ namespace VotingSystemApi.Controllers
         }
 
         [HttpPost("create_election")]
-        public async Task<IActionResult> CreateElection([FromBody] CreateElectionDto createElectionDto)
+        public async Task<IActionResult> CreateElection([FromBody] CreateElectionDto createElectionDto, [FromHeader] string authToken)
         {
             try
             {
+                if (!_authService.ValidateCurrentToken(authToken)) return BadRequest(new MessageView("Token not Valid"));
                 //if (createElectionDto.DateFrom < DateTime.Now) 
-                    //return BadRequest(new MessageView("DateFrom has to be a future date."));
+                //return BadRequest(new MessageView("DateFrom has to be a future date."));
                 //if (createElectionDto.DateFrom >= createElectionDto.DateTo) 
-                    //return BadRequest(new MessageView("DateFrom has earlier than DateTo."));
+                //return BadRequest(new MessageView("DateFrom has earlier than DateTo."));
                 if (createElectionDto.Candidates.Count < 2) 
                     return BadRequest(new MessageView("There has to be more than one candidate."));
                 if (createElectionDto.KeysPerVoter < 0) 
@@ -81,14 +108,18 @@ namespace VotingSystemApi.Controllers
                 if (createElectionDto.Candidates.Distinct().Count() < createElectionDto.Candidates.Count) 
                     return BadRequest(new MessageView("All candidate/party names have to be distinct."));
                 
-                var svc = NethereumProvider.GetVotingSystemService(createElectionDto.Auth.AccountAddress, createElectionDto.Auth.Password);
-
+                var svc = _authService.GetSession(HttpContext.Session.Get(authToken));
                 var result = await svc.AddElectionRequestAsync(createElectionDto.Title,
-                                                               (ulong)createElectionDto.DateFrom.Ticks,
-                                                               (ulong)createElectionDto.DateTo.Ticks,
-                                                               createElectionDto.KeysPerVoter,
-                                                               createElectionDto.Candidates);
+                                                                (ulong)createElectionDto.DateFrom.Ticks,
+                                                                (ulong)createElectionDto.DateTo.Ticks,
+                                                                createElectionDto.KeysPerVoter,
+                                                                createElectionDto.Candidates);
                 return Ok(new MessageView("Created"));
+               
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new MessageView(ex.Message));
             }
             catch (Exception ex)
             {
@@ -97,18 +128,23 @@ namespace VotingSystemApi.Controllers
         }
 
         [HttpPost("generate_codes")]
-        public async Task<IActionResult> GenerateCodes([FromBody] GenerateCodesDto generateCodesDto)
+        public async Task<IActionResult> GenerateCodes([FromBody] GenerateCodesDto generateCodesDto, [FromHeader] string authToken)
         {
             try
             {
-                var svc = NethereumProvider.GetVotingSystemService(generateCodesDto.Auth.AccountAddress, generateCodesDto.Auth.Password);
+                if (!_authService.ValidateCurrentToken(authToken)) return BadRequest(new MessageView("Token not Valid"));
+                var svc = _authService.GetSession(HttpContext.Session.Get(authToken));
 
                 var resp = await svc.AddAddUserToElectionRequestAndWaitForReceiptAsync(BigInteger.Parse(generateCodesDto.ElectionId),
-                                                                                       generateCodesDto.VoterAdress,
-                                                                                       generateCodesDto.Voter);
+                                                                                    generateCodesDto.VoterAdress,
+                                                                                    generateCodesDto.Voter);
 
                 var transferEventOutput = resp.DecodeAllEvents<UserAddedToElectionEventDTOBase>();
                 return Ok(transferEventOutput.FirstOrDefault().Event);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new MessageView(ex.Message));
             }
             catch (Exception ex)
             {
@@ -134,15 +170,42 @@ namespace VotingSystemApi.Controllers
         }
 
         [HttpPost("add_admin")]
-        public async Task<IActionResult> AddAdmin([FromBody] AddAdminDto addAdminDto)
+        public async Task<IActionResult> AddAdmin([FromBody] AddAdminDto addAdminDto, [FromHeader] string authToken)
         {
             try
             {
-                var svc = NethereumProvider.GetVotingSystemService(addAdminDto.Auth.AccountAddress, addAdminDto.Auth.Password);
+                if (!_authService.ValidateCurrentToken(authToken)) return BadRequest(new MessageView("Token not Valid"));
+                var svc = _authService.GetSession(HttpContext.Session.Get(authToken));
 
                 var resp = await svc.AddAdminRequestAndWaitForReceiptAsync(addAdminDto.Admin);
 
                 return Ok(new MessageView("Administrator added"));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new MessageView(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new MessageView(ex.Message));
+            }
+        }
+
+        [HttpPost("remove_admin")]
+        public async Task<IActionResult> RemoveAdmin([FromBody] AddAdminDto addAdminDto, [FromHeader] string authToken)
+        {
+            try
+            {
+                if (!_authService.ValidateCurrentToken(authToken)) return BadRequest(new MessageView("Token not Valid"));
+                var svc = _authService.GetSession(HttpContext.Session.Get(authToken));
+
+                var resp = await svc.RemoveAdminRequestAndWaitForReceiptAsync(addAdminDto.Admin);
+
+                return Ok(new MessageView("Administrator removed"));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new MessageView(ex.Message));
             }
             catch (Exception ex)
             {

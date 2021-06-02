@@ -69,7 +69,7 @@ contract VotingSystem {
 
     function getDetails(uint id) public view 
     adminOnly()
-    onlyAfterElection(id)
+    //onlyAfterElection(id)
     returns(electionDetails memory Value) 
     {
         for(uint i=0; i < elections.length; i++){
@@ -169,7 +169,7 @@ contract VotingSystem {
 
 
     function startVote(string memory voter, address keyAdr) public view
-    onlyDuringElection(keyAdr)
+    //onlyDuringElection(keyAdr)
     returns(election memory el) {
         require(keys[keyAdr].ValidKey, "Key not valid.");
         require(equal(voters[msg.sender], voter), "Sender and voter don't match.");
@@ -189,6 +189,9 @@ contract VotingSystem {
         return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b));
     }
 
+    function isAdmin() public view returns(bool) {
+        return admins[msg.sender];
+    }
 
     function addAdminBatch(address[] memory newAdmins) public 
     senderExistsInBatch(newAdmins)
@@ -206,10 +209,17 @@ contract VotingSystem {
     function addAdmin(address newAdmin) public 
     adminOnly()
     {
-        require(adminsAdded);
+        require(adminsAdded, "No admin batch added.");
         admins[newAdmin] = true;
     } 
 
+    function removeAdmin(address admin) public 
+    adminOnly()
+    {
+        require(adminsAdded, "No admin batch added.");
+        require(admin != msg.sender, "Admin can't take his own privileges.");
+        admins[admin] = false;
+    } 
 
     modifier onlyUniqueCandidates(string[] memory candidateList) {
         for(uint i=0; i < candidateList.length; i++){
