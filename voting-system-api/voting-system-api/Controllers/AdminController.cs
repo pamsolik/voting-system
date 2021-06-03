@@ -49,6 +49,7 @@ namespace VotingSystemApi.Controllers
         {
             try
             {
+                var User_Name = Request.Cookies;
                 if (!_authService.ValidateCurrentToken(authToken)) return BadRequest(new MessageView("Token not Valid"));
                 var svc = _authService.GetSession(HttpContext.Session.Get(authToken));
 

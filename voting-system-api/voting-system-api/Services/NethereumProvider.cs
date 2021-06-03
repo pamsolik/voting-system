@@ -8,7 +8,7 @@ namespace VotingSystemApi.Services
 {
     public class NethereumProvider
     {
-        private static readonly string _contractAdress = "0x99B5A1527C7a53c32041E051047b71593a70E407";
+        private static readonly string _contractAdress = "0xc8394B642593CEDeE4355ba7B829651835566D25";
 
         public static BigInteger GetTimeStamp(DateTime dateTime)
         {
