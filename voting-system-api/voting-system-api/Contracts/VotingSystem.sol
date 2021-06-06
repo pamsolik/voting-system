@@ -164,7 +164,8 @@ contract VotingSystem {
         voted = false;
         vote[] storage votesb = votes[keys[keyAdr].ElectionId];
         for(uint i=0; i < votesb.length; i++){
-            if (votesb[i].VoterAddress == msg.sender && votesb[i].Latest) voted = true;
+            //if (votesb[i].VoterAddress == msg.sender && votesb[i].Latest) voted = true;
+            if (votesb[i].KeyValue == keyAdr) voted = true;
         }
     }  
 
