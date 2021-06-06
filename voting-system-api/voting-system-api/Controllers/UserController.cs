@@ -11,7 +11,7 @@ namespace VotingSystemApi.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        [HttpGet("check_vote")]
+        [HttpPost("check_vote")]
         public async Task<IActionResult> CheckVote([FromBody] StartVoteDto startVoteDto)
         {
             try
@@ -29,7 +29,7 @@ namespace VotingSystemApi.Controllers
         }
 
         //Check if user can vote and return candidates and election details.
-        [HttpGet("start_vote")]
+        [HttpPost("start_vote")]
         public async Task<IActionResult> StartVote([FromBody] StartVoteDto startVoteDto)
         {
             try
