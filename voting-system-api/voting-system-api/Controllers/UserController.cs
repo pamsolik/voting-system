@@ -53,9 +53,13 @@ namespace VotingSystemApi.Controllers
             {
                 var svc = NethereumProvider.GetVotingSystemService(addVoteDto.Auth.AccountAddress, addVoteDto.Auth.Password);
 
+                //if (addVoteDto.CandidateId == null) return BadRequest(new MessageView("CandidateId can not be null"));
+
+                var cId = addVoteDto.CandidateId.Value;
+
                 var res = await svc.AddVoteRequestAndWaitForReceiptAsync(addVoteDto.Voter,
                                                                          addVoteDto.KeyAdr,
-                                                                         addVoteDto.CandidateId);
+                                                                         cId);
                 return Ok(new MessageView("Vote added!"));
             }
             catch (Exception ex)

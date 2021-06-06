@@ -139,6 +139,7 @@ contract VotingSystem {
 
     function addVote(string memory voter, address keyAdr, uint64 candidateId ) public 
         //onlyDuringElection(keyAdr)
+        candidateExist(keyAdr, candidateId)
         {
         require(keys[keyAdr].ValidKey, "Key not valid.");
         require(equal(voters[msg.sender], voter), "Sender and voter don't match.");
@@ -197,7 +198,7 @@ contract VotingSystem {
     senderExistsInBatch(newAdmins)
     {
         require(!adminsAdded, "Admin batch is only avaible once while there is no administrator.");
-        require(newAdmins.length>0, "List is empty");
+        require(newAdmins.length > 0, "List is empty");
 
         for(uint i=0; i < newAdmins.length; i++){
            admins[newAdmins[i]] = true;
@@ -272,6 +273,20 @@ contract VotingSystem {
             if (msg.sender == newAdmins[i]) exists = true;
         }
         if (!exists) revert("Sender has to be one of the admins.");
+        _;
+    }
+
+    modifier candidateExist(address keyAdr, uint64 candidate) {
+        key memory k = keys[keyAdr];
+        election memory el;
+        for(uint i=0; i < elections.length; i++){
+            if (elections[i].ElectionId == k.ElectionId){
+                el = elections[i];
+                break;
+            }
+        }
+
+        if(el.Candidates.length <= candidate) revert("Candidate doesn't exist.");
         _;
     }
 }
