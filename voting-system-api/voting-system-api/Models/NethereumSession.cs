@@ -19,7 +19,7 @@ namespace VotingSystemApi.Models
             var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
 
             var myIssuer = "https://localhost:5001";
-            var myAudience = "https://localhost:5002";
+            var myAudience = "https://localhost:3000";
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor

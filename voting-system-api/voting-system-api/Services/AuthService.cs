@@ -1,13 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using VotingSystemApi.Contracts.VotingSystem;
 using VotingSystemApi.Models;
-using VotingSystemApi.Models.DTOs;
-using VotingSystemApi.Models.Views;
-using Microsoft.AspNetCore.Http;
-using System.Runtime.Serialization.Formatters.Binary;
 using System;
-using System.IO;
 using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -38,7 +32,7 @@ namespace VotingSystemApi.Services
 			var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
 
 			var myIssuer = "https://localhost:5001";
-			var myAudience = "https://localhost:5002";
+			var myAudience = "https://localhost:3000";
 
 			var tokenHandler = new JwtSecurityTokenHandler();
 			try

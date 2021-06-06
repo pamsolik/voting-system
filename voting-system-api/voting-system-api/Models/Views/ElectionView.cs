@@ -13,6 +13,7 @@ namespace VotingSystemApi.Models.Views
             DateFrom = new DateTime((long)election.DateFrom);
             DateTo = new DateTime((long)election.DateTo);
             Candidates = election.Candidates;
+            Finished = DateTo <= DateTime.Now;
         }
 
         public string ElectionId { get; set; }
@@ -20,5 +21,6 @@ namespace VotingSystemApi.Models.Views
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
         public List<string> Candidates { get; set; }
+        public bool Finished { get; set; }
     }
 }
