@@ -40,7 +40,7 @@ namespace VotingSystemApi.Models
 
         public NethereumSession(AuthDto authDto)
         {
-            ExpirationDate = DateTime.Now.AddMinutes(15);
+            ExpirationDate = DateTime.Now.AddMinutes(30);
             Token = GenerateToken(authDto.AccountAddress);
             UserAdress = authDto.AccountAddress;
             Pass = authDto.Password;

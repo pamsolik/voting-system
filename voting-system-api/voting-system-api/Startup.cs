@@ -34,11 +34,9 @@ namespace VotingSystemApi
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(15);
+                options.IdleTimeout = TimeSpan.FromHours(1);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
-                
-                
             });
 
             services.Configure<CookiePolicyOptions>(options =>
